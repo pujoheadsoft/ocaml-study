@@ -1,4 +1,8 @@
-(* Shallow Handler で実装した Ask エフェクト *)
+(*
+  Shallow Handler で実装した Ask エフェクト
+  色々な型に対応できる
+  文字列特化のシンプルなやつは effect_ask_simple.ml を参照
+*)
 open Effect
 open Effect.Shallow
 
@@ -16,10 +20,10 @@ module type ASK = sig
 
   (*
     エフェクトを解釈する関数(ハンドラー)
-    init:tはラベル付き引数 initという名前で引数を指定できる
+    env:tはラベル付き引数 envという名前で引数を指定できる
     'a は型パラメータ(多相型)。関数が任意の型を扱えることを表す。
   *)
-  val run : (unit -> 'a) -> init:t -> 'a
+  val run : (unit -> 'a) -> env:t -> 'a
 end
 
 (*
@@ -55,7 +59,7 @@ module Ask (S : sig type t end) : ASK with type t = S.t = struct
 
   let ask () : t = perform Ask
 
-  let run (f: unit -> 'a) ~(init: t) : 'a =
+  let run (f: unit -> 'a) ~(env: t) : 'a =
     (*
       エフェクトハンドラーにはDeepとShallowがある
       複数回エフェクトが実行されたとき、その分だけ解釈を行う必要があるが、
@@ -76,7 +80,7 @@ module Ask (S : sig type t end) : ASK with type t = S.t = struct
         funは無名関数
         こういったfunを使わないloopに直接的な関数定義をすると型システムがlocally abstract typesのスコープを正しく解決できないらしい
       *)
-      fun env k x ->
+      fun e k x ->
         continue_with k x
         {
           retc = (fun result -> result);
@@ -84,7 +88,7 @@ module Ask (S : sig type t end) : ASK with type t = S.t = struct
           effc = (fun (type b) (eff: b Effect.t) ->
             match eff with
             | Ask -> Some (fun (k: (b, r) continuation) ->
-                loop env k env
+                loop e k e
               )
             | _ -> None
           )
@@ -94,7 +98,7 @@ module Ask (S : sig type t end) : ASK with type t = S.t = struct
       loopの呼び出し
       fiberは a -> b を (a, b) continuation に変換する関数
     *)
-    loop init (fiber f) ()
+    loop env (fiber f) ()
 
 end
 
@@ -113,6 +117,6 @@ let exampleStringAsk () =
   let another = StringAsk.ask () in
   Printf.printf "Got same value: %s\n" another
 
-let runExampleIntAsk () = IntAsk.run exampleIntAsk ~init:43
+let runExampleIntAsk () = IntAsk.run exampleIntAsk ~env:43
 
-let runExampleStringAsk () = StringAsk.run exampleStringAsk ~init:"Hello"
+let runExampleStringAsk () = StringAsk.run exampleStringAsk ~env:"Hello"

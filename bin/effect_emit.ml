@@ -1,3 +1,4 @@
+(* 特定の型に依存しないEmit *)
 open Effect
 open Effect.Deep
 
@@ -31,6 +32,6 @@ end
 module StringEmit = Emit (struct type t = string end)
 
 let exampleStringEmit () =
-  StringEmit.emit "Hello World"  
+  StringEmit.emit "Hello World"
 
-let runExampleStringEmit () = StringEmit.run exampleStringEmit (fun v -> Printf.printf "Emitted: %s\n" v)
+let runExampleStringEmit () = StringEmit.run exampleStringEmit (fun value -> Printf.printf "Emitted: %s\n" value)
