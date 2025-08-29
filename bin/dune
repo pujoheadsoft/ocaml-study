@@ -1,4 +1,4 @@
 (executable
  (public_name ocaml-study)
  (name main)
- (libraries ocaml_study))
+ (libraries effects))

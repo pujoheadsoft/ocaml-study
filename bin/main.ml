@@ -1,12 +1,6 @@
-open Effect_ask_simple
-open Effect_emit_simple
+open Effects
 
-let askEmit () =
-  let value = Ask.ask () in
-  Emit.emit value
-
-let exampleAskEmit () =
-  Ask.run (fun () -> Emit.run askEmit) ~env:"Hello World"
-
-let () = exampleAskEmit ()
-
+let () =
+  Printf.printf "Hello World\n";
+  Compose.exampleAskEmit ();
+  Compose_simple.exampleAskEmitSimple ();
