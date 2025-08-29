@@ -63,8 +63,19 @@ module Ask (S : sig type t end) : ASK with type t = S.t = struct
       Shallowはしてくれないので自分で再インストールが必要。
       この関数はShallowのハンドラーで、continue_withを使っている。
       自前でやる必要性からループ処理を記述している。
+      -------
+      [シグネチャの意味]
+      type a r. は全称量化された型。この場合のように関数定義内で局所的に導入される抽象型変数を`locally abstract types`という。
+      t は環境の型(askが返す型で、type tで定義されているやつ)
+      (a, r) continuation は型 a の値を受け取って型 r の結果を返す継続（continuation）の型
+      a は継続の入力の型
+      r は継続の出力の型
      *)
     let rec loop : type a r. t -> (a, r) continuation -> a -> r =
+      (*
+        funは無名関数
+        こういったfunを使わないloopに直接的な関数定義をすると型システムがlocally abstract typesのスコープを正しく解決できないらしい
+      *)
       fun env k x ->
         continue_with k x
         {
@@ -79,16 +90,29 @@ module Ask (S : sig type t end) : ASK with type t = S.t = struct
           )
         }
     in
+    (*
+      loopの呼び出し
+      fiberは a -> b を (a, b) continuation に変換する関数
+    *)
     loop init (fiber f) ()
+
 end
 
-module IntReader = Ask (struct type t = int end)  
-module StringReader = Ask (struct type t = string end) 
+module IntAsk = Ask (struct type t = int end)  
+module StringAsk = Ask (struct type t = string end) 
 
-let example () =  
-  let value = IntReader.ask () in  
-  Printf.printf "Got value: %d\n" value;  
-  let another = IntReader.ask () in  
-  Printf.printf "Got same value: %d\n" another  
-  
-let program () = IntReader.run example ~init:43
+let exampleIntAsk () =
+  let value = IntAsk.ask () in
+  Printf.printf "Got value: %d\n" value;
+  let another = IntAsk.ask () in
+  Printf.printf "Got same value: %d\n" another
+
+let exampleStringAsk () =
+  let value = StringAsk.ask () in
+  Printf.printf "Got value: %s\n" value;
+  let another = StringAsk.ask () in
+  Printf.printf "Got same value: %s\n" another
+
+let runExampleIntAsk () = IntAsk.run exampleIntAsk ~init:43
+
+let runExampleStringAsk () = StringAsk.run exampleStringAsk ~init:"Hello"
