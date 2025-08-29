@@ -1,5 +1,5 @@
+(* Shallow Handler で実装した Ask エフェクト *)
 open Effect
-open Effect.Deep
 open Effect.Shallow
 
 (*
