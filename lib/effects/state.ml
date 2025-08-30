@@ -11,7 +11,8 @@ module type STATE = sig
   type t
   val get : unit -> t
   val put : t -> unit
-  val run : (unit -> unit) -> init:t -> unit
+  (* Effect Tutorial では unit を返していたが、HaskellとかのevalStateみたいに値を返せるようにした *)
+  val run : (unit -> 'a) -> init:t -> 'a
 end
 
 module State (S : sig type t end) : STATE with type t = S.t = struct
@@ -47,6 +48,10 @@ let get_example () =
   let value = StringState.get() in
   Printf.printf "Got value: %s\n" value
 
+let get_example2 () =
+  let value = StringState.get() in
+  "<<<" ^ value ^ ">>>"
+
 let put_example () =
   let value = StringState.get() in
   Printf.printf "Got value: %s\n" value;
@@ -55,10 +60,13 @@ let put_example () =
 
   let new_value = StringState.get() in
   Printf.printf "Got new value: %s\n" new_value
-
+  
 let exec_get () =
   StringState.run get_example ~init:"Hello, world!"
 
+let exec_get2 () =
+  let value = StringState.run get_example2 ~init:"Value" in
+  Printf.printf "Final value: %s\n" value
 
 let exec_put () =
   StringState.run put_example ~init:"Hello, world!"
