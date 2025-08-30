@@ -42,18 +42,18 @@ end
 module IntAsk = Ask (struct type t = int end)  
 module StringAsk = Ask (struct type t = string end) 
 
-let exampleIntAsk () =
+let two_int_ask () =
   let value = IntAsk.ask () in
   Printf.printf "Got value: %d\n" value;
   let another = IntAsk.ask () in
   Printf.printf "Got same value: %d\n" another
 
-let exampleStringAsk () =
+let two_string_ask () =
   let value = StringAsk.ask () in
   Printf.printf "Got value: %s\n" value;
   let another = StringAsk.ask () in
   Printf.printf "Got same value: %s\n" another
 
-let runExampleIntAsk () = IntAsk.run exampleIntAsk ~env:43
+let example_int_ask () = IntAsk.run two_int_ask ~env:43
 
-let runExampleStringAsk () = StringAsk.run exampleStringAsk ~env:"Hello"
+let example_string_ask () = StringAsk.run two_string_ask ~env:"Hello"

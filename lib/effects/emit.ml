@@ -31,7 +31,8 @@ end
 
 module StringEmit = Emit (struct type t = string end)
 
-let exampleStringEmit () =
+let emit_hello_world () =
   StringEmit.emit "Hello World"
 
-let runExampleStringEmit () = StringEmit.run exampleStringEmit (fun value -> Printf.printf "Emitted: %s\n" value)
+let example_emit () =
+  StringEmit.run emit_hello_world (fun value -> Printf.printf "Emitted: %s\n" value)
