@@ -1,5 +1,5 @@
-open Effect_ask_simple
-open Effect_emit_simple
+open Effects.Ask_simple
+open Effects.Emit_simple
 
 let askEmit () =
   let value = Ask.ask () in

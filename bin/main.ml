@@ -1,4 +1,4 @@
-open Effects
+open Lib
 
 let () =
   Printf.printf "Hello World\n";

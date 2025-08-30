@@ -1,5 +1,5 @@
-open Effect_ask_deep
-open Effect_emit
+open Effects.Ask_deep
+open Effects.Emit
 
 let askEmit () =
   let value = StringAsk.ask() in
