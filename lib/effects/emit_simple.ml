@@ -16,7 +16,7 @@ let run_emit (f: unit -> 'a) : 'a =
     effc = (fun (type b) (eff: b Effect.t) ->
       match eff with
       | Emit value -> Some (fun (k: (b, _) continuation) ->
-          Printf.printf "Emitted: %s\n" value;
+          Printf.printf "Emit %s\n" value;
           continue k ())
       | _ -> None)
   }

@@ -5,6 +5,7 @@
 open Effect
 open Effect.Deep
 
+(* open Effectしている場合は、Effect. は省略して単に t と書ける *)
 type _ Effect.t += Ask : string Effect.t
 
 let ask () : string = perform Ask
