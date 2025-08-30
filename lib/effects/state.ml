@@ -1,6 +1,12 @@
 open Effect
 open Effect.Shallow
 
+(* こういうデフォルトのハンドラー ( ('a,'b) handler ) を作っておくと毎度同じものを書かないで済む *)
+let default_handler =
+  { retc = Fun.id;
+    exnc = raise;
+    effc = fun (type c) (_ : c Effect.t) -> None }
+
 module type STATE = sig
   type t
   val get : unit -> t
@@ -21,9 +27,7 @@ module State (S : sig type t end) : STATE with type t = S.t = struct
     let rec loop : type a r. t -> (a, r) continuation -> a -> r =
       fun state k x ->
         continue_with k x
-        {
-          retc = Fun.id;
-          exnc = raise;
+        { default_handler with
           effc = (fun (type b) (eff: b Effect.t) -> 
             match eff with
             | Get -> Some (fun (k: (b, r) continuation) ->
