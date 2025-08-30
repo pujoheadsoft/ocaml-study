@@ -12,8 +12,8 @@ module Emit = struct
 
   let run (f: unit -> 'a) : 'a =
     match_with f ()
-    { retc = (fun result -> result);
-      exnc = (fun e -> raise e);
+    { retc = Fun.id;
+      exnc = raise;
       effc = (fun (type b) (eff: b Effect.t) ->
         match eff with
         | Emit value -> Some (fun (k: (b, _) continuation) ->

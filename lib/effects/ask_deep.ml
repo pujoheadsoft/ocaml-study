@@ -29,8 +29,8 @@ module Ask (S : sig type t end) : ASK with type t = S.t = struct
    *)
   let run (f: unit -> 'a) ~(env: t) : 'a =  
     match_with f ()  
-    { retc = (fun result -> result);  
-      exnc = (fun e -> raise e);  
+    { retc = Fun.id;  
+      exnc = raise; 
       effc = (fun (type b) (eff: b Effect.t) ->  
         match eff with  
         | Ask -> Some (fun (k: (b,_) continuation) ->  

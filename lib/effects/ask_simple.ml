@@ -12,9 +12,9 @@ module Ask = struct
 
   let run (f: unit -> 'a) ~(env: string) : 'a =  
     match_with f ()  
-    { retc = (fun result -> result);  
-      exnc = (fun e -> raise e);  
-      effc = (fun (type b) (eff: b Effect.t) ->  
+    { retc = Fun.id;
+      exnc = raise;
+      effc = (fun (type b) (eff: b Effect.t) ->
         match eff with
         | Ask -> Some (fun (k: (b, _) continuation) ->
             continue k env)
