@@ -52,7 +52,7 @@ let get_example2 () =
   let value = StringState.get() in
   "<<<" ^ value ^ ">>>"
 
-let put_example () =
+let example () =
   let value = StringState.get() in
   Printf.printf "Got value: %s\n" value;
   
@@ -68,5 +68,5 @@ let exec_get2 () =
   let value = StringState.run get_example2 ~init:"Value" in
   Printf.printf "Final value: %s\n" value
 
-let exec_put () =
-  StringState.run put_example ~init:"Hello, world!"
+let exec_example () =
+  StringState.run example ~init:"Hello, world!"
